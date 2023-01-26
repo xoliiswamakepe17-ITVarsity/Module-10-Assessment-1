@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <button style="background-color: rgb(30, 255, 0); border-radius: 30%; float: right;" type="button" onClick="window.location.reload();">reload</button>
+        <button id="getData">Get data</button>
+        <button id="getList">Get list</button>
+            <br><br>
+        <form id="myForm">
+            <input type="text" name="firstname" id="firstname" value="Firstname"/> 
+            <input type="text" name="lastname" id="lastname" value="Lastname"/> 
+            <button id="submitForm">Submit</button>
+        </form>
+
+        <p id="posts"></p>
+        <p id="message"></p>
+        <p id="greeting"></p>
+        
+    </body>
+<script>
+        document.getElementById("getData").addEventListener("click",getData);
+        document.getElementById("getList").addEventListener("click",getList);
+        document.getElementById("submitForm").addEventListener("click",submitForm);
+
+        function getData()
+        {
+            fetch('https://mysite.itvarsity.org/api/fetch/get-data/')
+            .then(function(response){
+            return response.text();
+            })
+            .then(function(data){document.getElementById("message").innerHTML=data;})
+        }
+
+        function getList()
+        {
+            fetch('https://mysite.itvarsity.org/api/fetch/get-list/')
+            .then(function(response){return response.json();})
+            .then(function(data){
+                var output="<h1>Posts</h1>";
+
+                for(x=0;x<data.length;x++)
+                {
+                    output +=
+                    `
+                        <ul>
+                            <li><h2>${data[x][0]}</h2></li>
+                            <li><b>${data[x][01]}</b></li>
+                            <li>${data[x][2]}</li>
+                        </ul>
+                    `
+                }
+
+                document.getElementById("posts").innerHTML=output;
+            })
+        }
+
+        function submitForm(e)
+        {
+            e.preventDefault();
+
+            form = new FormData(document.querySelector("#myForm"));
+
+            fetch('https://mysite.itvarsity.org/api/fetch/send-data/', 
+            {
+                method:'POST',
+                headers:{'Accept':'application/json, */*'},
+                body:form
+            })
+            .then(function(response)
+            {
+                return response.text();
+            })
+            .then(function(data)
+            {
+                document.getElementById("greeting").innerHTML=data;
+            })
+        }
+</script>
+</html>
